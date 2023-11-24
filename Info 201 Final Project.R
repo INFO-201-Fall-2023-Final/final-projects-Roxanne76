@@ -1,22 +1,46 @@
-library("stringr")
+#Info 201 Team BD: Randolph Jenkins, Vridhi Manchanda, Yaqi Wang
+#Final Project: Data Wrangling 
+
+library(stringr)
 library(dplyr)
 
 #joining datasets
-region <- read.csv("salaries-by-region.csv")
-college_type <- read.csv("salaries-by-college-type.csv")
 
-df <- merge(x=region, y=college_type, by= c("School.Name"))
+region_df <- read.csv("salaries-by-region.csv")
 
-#adding categorical column called ivy.type to compare ivy and non-ivy schools
+college_type_df <- read.csv("salaries-by-college-type.csv")
+
+
+df <- merge(x = college_type_df, y = region_df, 
+            by = "School.Name", all.x = TRUE)
+
+
+df$Starting.Median.Salary.y <- NULL
+df$Mid.Career.Median.Salary.y <- NULL
+df$Mid.Career.10th.Percentile.Salary.y <- NULL
+df$Mid.Career.25th.Percentile.Salary.y <- NULL
+df$Mid.Career.75th.Percentile.Salary.y <- NULL
+df$Mid.Career.90th.Percentile.Salary.y <- NULL
+
+
+
+#adding a categorical column called ivy. type to compare ivy and non-ivy schools
+
 ivy_type_list <- c()
 
 for (school in df$School.Type){
+  
   if (school == "Ivy League"){
+    
     ivy_type_list <- c(ivy_type_list, 1)
+    
   }
   else{
+    
     ivy_type_list <- c(ivy_type_list, 0)
+    
   }
+  
 }
 
 df$Ivy.Type <- ivy_type_list
@@ -24,20 +48,24 @@ df$Ivy.Type <- ivy_type_list
 #adding numerical column called Start.Mid.Salary.Diff which is the difference between
 #the starting and mid career salaries to get an idea of how the salaries change 
 #from starting to mid career and base conclusions on how much the increase is
+
 df$Starting.Median.Salary.x <- as.numeric(gsub("[$,]", "", df$Starting.Median.Salary.x))
+
 df$Mid.Career.Median.Salary.x <- as.numeric(gsub("[$,]", "", df$Mid.Career.Median.Salary.x))
 
 starting_salary <- c(df$Starting.Median.Salary.x)
+
 mid_career_salary <- c(df$Mid.Career.Median.Salary.x)
+
 salary_diff_list <- mid_career_salary - starting_salary 
 
 df$Start.Mid.Salary.Diff <- salary_diff_list
 
 #adding summarization data frame that averages out the starting and mid career salaries
-group <- group_by(df, School.Name, Start.Mid.Salary.Diff)
-salary_average <- (mid_career_salary + starting_salary)/2 
-summary_df <- summarize(group, Salary.Average = salary_average)
 
+group_df <- group_by(df, School.Type)
+
+summarize_df <- summarize(group_df, mean(Start.Mid.Salary.Diff))
 
 
 
