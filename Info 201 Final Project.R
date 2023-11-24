@@ -33,5 +33,13 @@ salary_diff_list <- mid_career_salary - starting_salary
 
 df$Start.Mid.Salary.Diff <- salary_diff_list
 
+#adding summarization data frame that averages out the starting and mid career salaries
+group <- group_by(df, School.Name, Start.Mid.Salary.Diff)
+salary_average <- (mid_career_salary + starting_salary)/2 
+summary_df <- summarize(group, Salary.Average = salary_average)
+
+
+
+
 
 
