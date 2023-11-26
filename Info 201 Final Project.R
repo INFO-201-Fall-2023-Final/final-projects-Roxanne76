@@ -4,7 +4,7 @@
 library(stringr)
 library(dplyr)
 
-#joining datasets
+#Data Joining
 
 region_df <- read.csv("salaries-by-region.csv")
 
@@ -14,7 +14,8 @@ college_type_df <- read.csv("salaries-by-college-type.csv")
 df <- merge(x = college_type_df, y = region_df, 
             by = "School.Name", all.x = TRUE)
 
-
+#Data Cleaning and Augmentation
+#removing one of the columns in the joined data set that were in both data sets, to avoid duplicate columns 
 df$Starting.Median.Salary.y <- NULL
 df$Mid.Career.Median.Salary.y <- NULL
 df$Mid.Career.10th.Percentile.Salary.y <- NULL
@@ -61,7 +62,8 @@ salary_diff_list <- mid_career_salary - starting_salary
 
 df$Start.Mid.Salary.Diff <- salary_diff_list
 
-#adding summarization data frame that averages out the starting and mid career salaries
+#adding summarisation data frame that calculates the average salary based on school type
+#showing ivy league schools have the highest average salary
 
 group_df <- group_by(df, School.Type)
 
