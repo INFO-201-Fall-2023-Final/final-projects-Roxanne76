@@ -15,7 +15,8 @@ df <- merge(x = college_type_df, y = region_df,
             by = "School.Name", all.x = TRUE)
 
 #Data Cleaning and Augmentation
-#removing one of the columns in the joined data set that were in both data sets, to avoid duplicate columns 
+#removing the duplicate columns in the joined data set that were in both initial data sets, to avoid duplicate columns 
+
 df$Starting.Median.Salary.y <- NULL
 df$Mid.Career.Median.Salary.y <- NULL
 df$Mid.Career.10th.Percentile.Salary.y <- NULL
@@ -25,7 +26,8 @@ df$Mid.Career.90th.Percentile.Salary.y <- NULL
 
 
 
-#adding a categorical column called ivy. type to compare ivy and non-ivy schools
+#adding a Categorical Column 
+#called ivy.type to categorize schools as ivy (1) or non-ivy (0)
 
 ivy_type_list <- c()
 
@@ -46,9 +48,11 @@ for (school in df$School.Type){
 
 df$Ivy.Type <- ivy_type_list
 
-#adding numerical column called Start.Mid.Salary.Diff which is the difference between
+#adding Numerical Column 
+#called Start.Mid.Salary.Diff which is the difference between
 #the starting and mid career salaries to get an idea of how the salaries change 
-#from starting to mid career and base conclusions on how much the increase is
+#from starting to mid career to base conclusions on how much the increase difffers
+
 
 df$Starting.Median.Salary.x <- as.numeric(gsub("[$,]", "", df$Starting.Median.Salary.x))
 
@@ -62,8 +66,10 @@ salary_diff_list <- mid_career_salary - starting_salary
 
 df$Start.Mid.Salary.Diff <- salary_diff_list
 
-#adding summarisation data frame that calculates the average salary based on school type
-#showing ivy league schools have the highest average salary
+#adding Summarization Data Frame 
+#that calculates the average of the salary difference 
+#between start and mid career salary based on school type
+#showing ivy league schools have the highest average increase in salary from start to mid career
 
 group_df <- group_by(df, School.Type)
 
